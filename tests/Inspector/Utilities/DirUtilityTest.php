@@ -28,4 +28,16 @@ class DirUtilityTest extends \TestCase
 
         this($dir->getFiles(__DIR__, ".asdf"))->should_have_length_of(0)->go();
     }
+
+    /**
+     * @test
+     */
+    public function it_copies_a_directory()
+    {
+        $dir = new DirUtility;
+        $id = uniqid();
+
+        $dir->copy(__DIR__, "/tmp/".$id);
+        this($dir->getFiles(__DIR__))->should_be_equal_to($dir->getFiles("/tmp/".$id))->go();
+    }
 }
