@@ -34,10 +34,11 @@ class DirUtilityTest extends \TestCase
      */
     public function it_copies_a_directory()
     {
-        $dir = new DirUtility;
-        $id = uniqid();
+        $fileMock = \Mockery::mock("Inspector\Utilities\FileUtility");
+        $fileMock->shouldReceive("write", "read")->atLeast()->once()->andReturn("foo");
 
-        $dir->copy(__DIR__, "/tmp/".$id);
-        this($dir->getFiles(__DIR__))->should_be_equal_to($dir->getFiles("/tmp/".$id))->go();
+        $dir = new DirUtility($fileMock);
+
+        $dir->copy(__DIR__, "/tmp/".uniqid());
     }
 }

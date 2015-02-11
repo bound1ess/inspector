@@ -3,6 +3,10 @@
 class DirUtility
 {
 
+    public function __construct(protected FileUtility $file = null)
+    {
+    }
+
     public function exists(string $dir): boolean
     {
         // Somewhat weird.
@@ -41,13 +45,8 @@ class DirUtility
             foreach ($files as $file) {
                 $newName = str_replace("/", "_", substr($file, strlen($source) + 1));
 
-                $this->write($destination."/".$newName, $this->read($file));
+                $this->file->write($destination."/".$newName, $this->file->read($file));
             }
         }
-    }
-
-    public function write(string $file, string $contents): void
-    {
-        file_put_contents($file, $contents);
     }
 }

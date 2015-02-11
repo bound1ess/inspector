@@ -16,4 +16,9 @@ class FileUtility
 
         return file_get_contents($file);
     }
+
+    public function write(string $file, string $contents): void
+    {
+        file_put_contents($file, $contents);
+    }
 }
