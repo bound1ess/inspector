@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<phpunit
+    colors="true"
+    processIsolation="false"
+    convertErrorsToExceptions="true"
+    convertNoticesToExceptions="true"
+    convertWarningsToExceptions="true"
+    stopOnError="false"
+    stopOnFailure="false"
+    stopOnIncomplete="false"
+    stopOnSkipped="false"
+    >
+    <testsuites>
+        <testsuite name="Inspector Test Suite">
+            <directory>./tests/</directory>
+        </testsuite>
+    </testsuites>
+    <filter>
+        <whitelist>
+            <directory>./src/Inspector/</directory>
+        </whitelist>
+        <blacklist>
+            <directory>./vendor/</directory>
+        </blacklist>
+    </filter>
+</phpunit>
+<!-- vim: syntax=xml
+-->

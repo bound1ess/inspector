@@ -7,5 +7,11 @@
         "phpunit/phpunit": "~4.5",
         "mockery/mockery": "~0.9",
         "bound1ess/essence": "~1"
+    },
+
+    "autoload": {
+        "psr-4": {
+            "Inspector\\": "src/Inspector/"
+        }
     }
 }
