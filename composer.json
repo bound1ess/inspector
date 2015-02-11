@@ -25,7 +25,8 @@
 
     "autoload-dev": {
         "files": [
-            "tests/TestCase.php"
+            "tests/TestCase.php",
+            "tests/CommandTestCase.php"
         ]
     }
 }
