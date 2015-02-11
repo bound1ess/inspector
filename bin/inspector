@@ -1,0 +1,27 @@
+#!/usr/bin/env hhvm
+<?hh
+
+if ( ! defined("INSPECTOR")) {
+    define("INSPECTOR", __DIR__."/..");
+}
+
+if ( ! defined("INSPECTOR_WD")) {
+    define("INSPECTOR_WD", getcwd());
+}
+
+if (is_readable($autoloader = INSPECTOR."/vendor/autoload.php")) {
+    require $autoloader;
+} else {
+    require INSPECTOR."/../../autoload.php";
+}
+
+$container = new PhpPackages\Container\Container;
+
+$app = $container->make("Symfony\Component\Console\Application");
+$app->setName("Inspector");
+$app->setVersion("latest");
+
+$app->add($container->make("Inspector\CLI\Commands\InspectCommand"));
+
+$app->setAutoExit(true);
+$app->run();

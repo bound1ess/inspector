@@ -2,6 +2,9 @@
     "name": "bound1ess/inspector",
     "description": "Xdebug-independent code coverage analysis tool.",
     "license": "MIT",
+    "bin": [
+        "bin/inspector"
+    ],
 
     "require": {
         "symfony/console": "~2.6",
