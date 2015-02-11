@@ -1,1 +1,1 @@
-run-tests: ; vendor/bin/phpunit
+run-tests: ; hhvm vendor/bin/phpunit

@@ -13,5 +13,11 @@
         "psr-4": {
             "Inspector\\": "src/Inspector/"
         }
+    },
+
+    "autoload-dev": {
+        "files": [
+            "tests/TestCase.php"
+        ]
     }
 }
