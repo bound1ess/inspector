@@ -1,0 +1,11 @@
+{
+    "name": "bound1ess/inspector",
+    "description": "Xdebug-independent code coverage analysis tool.",
+    "license": "MIT",
+
+    "require-dev": {
+        "phpunit/phpunit": "~4.5",
+        "mockery/mockery": "~0.9",
+        "bound1ess/essence": "~1"
+    }
+}
