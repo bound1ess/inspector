@@ -8,7 +8,7 @@ use Inspector\Utilities\DirUtility;
 class InspectCommand extends \Symfony\Component\Console\Command\Command
 {
 
-    public function __construct(protected DirUtility $dir)
+    public function __construct(protected DirUtility $dir = null)
     {
         parent::__construct();
     }

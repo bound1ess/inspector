@@ -6,11 +6,12 @@ class InspectorCommandTest extends \CommandTestCase
     /**
      * @test
      */
-    public function it_prints_a_message()
+    public function it_has_the_right_name_and_description()
     {
-        $input = Map<string, string> {"--dir" => "src"};
-        $message = $this->runCommand(new InspectCommand, $input);
+        $command = new InspectCommand;
 
-        this($message)->should_be_equal_to("Working with src directory...".PHP_EOL)->go();
+        this($command->getName())->should_be_equal("inspect")->go();
+        this($command->getDescription())
+            ->should_be_equal("Performs code coverage analysis.")->go();
     }
 }
