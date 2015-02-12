@@ -36,4 +36,17 @@ class FileUtilityTest extends \TestCase
         this($file->containsClass(uniqid()))->should_not_be_true->go();
         this($file->containsClass(INSPECTOR."/composer.json"))->should_be_false->go();
     }
+
+    /**
+     * @test
+     */
+    public function it_writes_to_a_file()
+    {
+        $file = new FileUtility;
+        $fileName = "/tmp/".uniqid();
+
+        $file->write($fileName, "foobar");
+
+        expect(this(file_get_contents($fileName)))->to_be_equal_to("foobar")->go();
+    }
 }
