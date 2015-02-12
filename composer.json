@@ -27,6 +27,9 @@
         "files": [
             "tests/TestCase.php",
             "tests/CommandTestCase.php"
+        ],
+        "classmap": [
+            "stubs/"
         ]
     }
 }
