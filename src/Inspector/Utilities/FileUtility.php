@@ -17,6 +17,15 @@ class FileUtility
         return file_get_contents($file);
     }
 
+    public function containsClass(string $file): boolean
+    {
+        if (is_null($contents = $this->read($file))) {
+            return false;
+        }
+
+        return (boolean) preg_match("/class(\s+)(\w+)/", $contents);
+    }
+
     public function write(string $file, string $contents): void
     {
         file_put_contents($file, $contents);
