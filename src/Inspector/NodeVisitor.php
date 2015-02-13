@@ -9,6 +9,10 @@ class NodeVisitor extends \PhpParser\NodeVisitorAbstract
 
         $this->allowed = [
             // @todo
+            "If_",
+            "Return_",
+            "Foreach_",
+            "TryCatch",
         ];
     }
 
@@ -18,7 +22,7 @@ class NodeVisitor extends \PhpParser\NodeVisitorAbstract
         $className = end($className);
 
         if (in_array($className, $this->allowed)) {
-            echo (new \PhpParser\NodeDumper)->dump($node), PHP_EOL;
+            //echo (new \PhpParser\NodeDumper)->dump($node), PHP_EOL;
             return [$this->marker, $node];
         }
 
