@@ -3,27 +3,25 @@
 class NodeVisitor extends \PhpParser\NodeVisitorAbstract
 {
 
-    /**
-     * @var boolean
-     */
-    protected $insideMethod = false;
-
     public function __construct($marker)
     {
         $this->marker = $marker;
-    }
 
-    public function enterNode(\PhpParser\Node $node)
-    {
-        if ($node instanceof \PhpParser\Node\Stmt\ClassMethod) {
-            $this->insideMethod = true;
-        }
+        $this->allowed = [
+            // @todo
+        ];
     }
 
     public function leaveNode(\PhpParser\Node $node)
     {
-        if ($this->insideMethod) {
+        $className = explode("\\", get_class($node));
+        $className = end($className);
+
+        if (in_array($className, $this->allowed)) {
+            echo (new \PhpParser\NodeDumper)->dump($node), PHP_EOL;
             return [$this->marker, $node];
         }
+
+        return $node;
     }
 }
