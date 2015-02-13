@@ -11,7 +11,7 @@ class Inspector
     /**
      * @var string
      */
-    protected $marker = "__inspectorMarker__(__FILE__, __LINE__);";
+    protected $marker = "<?php __inspectorMarker__(__FILE__, __LINE__);";
 
     public function __construct(
         Utilities\DirUtility $dir = null,
@@ -20,6 +20,10 @@ class Inspector
     {
         $this->dir = $dir;
         $this->file = $file;
+
+        // @todo inject instead
+        $this->parser = new \PhpParser\Parser(new \PhpParser\Lexer);
+        $this->marker = $this->parser->parse($this->marker);
     }
 
     public function copySourceTree($sourceDir)
@@ -63,8 +67,9 @@ class Inspector
         $lines = [];
         $modified = 0;
 
-        // @todo
-        //var_dump((new \PhpParser\Parser(new \PhpParser\Lexer\Emulative))->parse(__FILE__));
+        $ast = $this->parser->parse($contents);
+
+        // Traverse the AST and insert "markers";
 
         $this->file->write($file, implode(PHP_EOL, $lines));
 
