@@ -14,7 +14,7 @@ class NodeVisitorTest extends \TestCase
         this($result)->should_have_length_of(2)->go();
         this($result)->should_be_an("array")->go();
 
-        $result = $visitor->leaveNode(\Mockery::namedMock("Return_", "PhpParser\Node"));
+        $result = $visitor->leaveNode(\Mockery::namedMock("Case_", "PhpParser\Node"));
         this($result)->should_have_length_of(2)->go();
         this($result)->should_be_an("array")->go();
 
