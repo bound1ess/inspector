@@ -1,5 +1,8 @@
 <?php namespace Inspector;
 
+/**
+ * @codeCoverageIgnore
+ */
 class Inspector
 {
 
