@@ -14,6 +14,11 @@ class Inspector
     /**
      * @var string
      */
+    protected $src;
+
+    /**
+     * @var string
+     */
     protected $marker = "<?php __inspectorMarker__(__FILE__, __LINE__);";
 
     public function __construct(
@@ -50,12 +55,14 @@ class Inspector
         }
 
         // Run PHPUnit.
-        (new \PHPUnit_TextUI_Command)->run([], false);
+        //$_SERVER["argv"]["--configuration"] = $this->src."/../phpunit.xml";
+
+        \PHPUnit_TextUI_Command::main(false);
     }
 
-    public function copySourceTree($sourceDir)
+    public function copySourceTree($source)
     {
-        $sourceDir = INSPECTOR_WD."/".$sourceDir;
+        $sourceDir = INSPECTOR_WD."/".$source;
 
         if ( ! $this->dir->exists($sourceDir)) {
             throw new \InvalidArgumentException("Directory $sourceDir doesn't exist.");
@@ -65,7 +72,12 @@ class Inspector
 
         $this->dir->copy($sourceDir, $this->dest);
 
-        return "<info>Copying the source tree ($sourceDir) into {$this->dest}...</info>";
+        $this->src = $sourceDir;
+
+        $message = "<info>Copying the source tree ($source) into {$this->dest}...</info>";
+        $message .= PHP_EOL;
+
+        return $message;
     }
 
     public function placeMarkers()

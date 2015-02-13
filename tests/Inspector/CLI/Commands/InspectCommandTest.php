@@ -22,7 +22,9 @@ class InspectorCommandTest extends \CommandTestCase
     {
         $inspector = \Mockery::mock("Inspector\Inspector");
 
-        $inspector->shouldReceive("copySourceTree", "placeMarkers")->once()->andReturn("foo");
+        $inspector->shouldReceive("copySourceTree", "placeMarkers", "runTests")
+            ->once()
+            ->andReturn("foo");
 
         this($this->runCommand(new InspectCommand($inspector)))->should_not_be_empty->go();
     }
