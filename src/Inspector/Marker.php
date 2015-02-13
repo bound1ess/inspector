@@ -35,9 +35,9 @@ class Marker
 
         $markers = [];
 
-        foreach ($this->markers as $file) {
-            foreach ($file as $line) {
-                if ( ! isset($markers[$file]) or ! in_array($line - 1, $markers[$file])) {
+        foreach ($this->markers as $file => $lines) {
+            foreach ($lines as $line) {
+                if ( ! in_array($line - 1, $this->markers[$file], true)) {
                     $markers[$file][] = $line;
                 }
             }
