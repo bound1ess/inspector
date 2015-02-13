@@ -61,12 +61,8 @@ class Inspector
         $lines = [];
         $modified = 0;
 
-        $stack = new \SplStack();
-        array_map([$stack, "push"], array_reverse(explode(PHP_EOL, $contents)));
-
-        while ($stack->count() > 0) {
-            $lines[] = $stack->pop().$this->marker;
-        }
+        // @todo
+        //var_dump((new \PhpParser\Parser(new \PhpParser\Lexer\Emulative))->parse(__FILE__));
 
         $this->file->write($file, implode(PHP_EOL, $lines));
 
