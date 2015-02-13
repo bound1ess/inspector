@@ -8,7 +8,15 @@ class Inspector
      */
     protected $dest;
 
-    public function __construct(protected Utilities\DirUtility $dir = null)
+    /**
+     * @var string
+     */
+    protected $marker = "__inspectorMarker__(__FILE__, __LINE__);";
+
+    public function __construct(
+        protected Utilities\DirUtility $dir = null,
+        protected Utilities\FileUtility $file = null
+    )
     {
     }
 
@@ -25,7 +33,43 @@ class Inspector
 
     public function placeMarkers(): string
     {
-        // @todo
-        return "Message for the user. ".$this->dest;
+        $message = "<info>Modifying {$this->dest}...</info>".PHP_EOL;
+
+        foreach ($this->dir->getFiles($this->dest) as $file) {
+            $message .= $file;
+
+            if ( ! $this->file->containsClass($file)) {
+                $message .= " <comment>Skipped.</comment>".PHP_EOL;
+
+                continue;
+            }
+
+            $lines = $this->modifyFile($file);
+
+            $message .= " <info>Done, $lines lines modified.</info>".PHP_EOL;
+        }
+
+        return $message;
+    }
+
+    protected function modifyFile(string $file): integer
+    {
+        if (is_null($contents = $this->file->read($file))) {
+            return 0;
+        }
+
+        $lines = [];
+        $modified = 0;
+
+        $stack = new \SplStack();
+        array_map([$stack, "push"], array_reverse(explode(PHP_EOL, $contents)));
+
+        while ($stack->count() > 0) {
+            $lines[] = $stack->pop().$this->marker;
+        }
+
+        $this->file->write($file, implode(PHP_EOL, $lines));
+
+        return $modified;
     }
 }

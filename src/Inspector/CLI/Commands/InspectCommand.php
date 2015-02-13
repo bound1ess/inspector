@@ -29,7 +29,7 @@ class InspectCommand extends \Symfony\Component\Console\Command\Command
         $dir = $input->getOption("dir");
 
         $output->writeln($this->inspector->copySourceTree($dir));
-        $output->writeln($this->inspector->placeMarkers());
+        $output->write($this->inspector->placeMarkers());
         // $this->inspector->runTests();
         // $this->inspector->analyse();
     }
