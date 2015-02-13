@@ -24,6 +24,11 @@ class Inspector
         // @todo inject instead
         $this->parser = new \PhpParser\Parser(new \PhpParser\Lexer);
         $this->marker = $this->parser->parse($this->marker);
+
+        $this->printer = new \PhpParser\PrettyPrinter\Standard;
+
+        $this->traverser = new \PhpParser\NodeTraverser;
+        $this->traverser->addVisitor(new NodeVisitor($this->marker));
     }
 
     public function copySourceTree($sourceDir)
@@ -50,9 +55,9 @@ class Inspector
                 continue;
             }
 
-            $lines = $this->modifyFile($file);
+            $this->modifyFile($file);
 
-            $message .= " <info>Done, $lines lines modified.</info>".PHP_EOL;
+            $message .= " <info>Done, the file was modified.</info>".PHP_EOL;
         }
 
         return $message;
@@ -64,15 +69,15 @@ class Inspector
             return 0;
         }
 
-        $lines = [];
-        $modified = 0;
+        try {
+            $ast = $this->parser->parse($contents);
 
-        $ast = $this->parser->parse($contents);
+            // Traverse the AST and insert "markers".
+            $ast = $this->traverser->traverse($ast);
 
-        // Traverse the AST and insert "markers";
-
-        $this->file->write($file, implode(PHP_EOL, $lines));
-
-        return $modified;
+            $this->file->write($file, $this->printer->prettyPrintFile($ast));
+        } catch (\PhpParser\Error $exception) {
+            throw $exception;
+        }
     }
 }
