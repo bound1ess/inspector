@@ -20,7 +20,7 @@ class NodeVisitor extends \PhpParser\NodeVisitorAbstract
             "Continue_" => -1,
             "Do_"       => -1,
             "Echo_"     => 0,
-            "Else_"     => 1,
+            //"Else_"     => 1,
             "For_"      => 0,
             "Switch_"   => -1,
             "Throw_"    => 0,
