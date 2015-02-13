@@ -14,4 +14,16 @@ class InspectorCommandTest extends \CommandTestCase
         this($command->getDescription())
             ->should_be_equal("Performs code coverage analysis.")->go();
     }
+
+    /**
+     * @test
+     */
+    public function it_prints_something()
+    {
+        $inspector = \Mockery::mock("Inspector\Inspector");
+
+        $inspector->shouldReceive("copySourceTree", "placeMarkers")->once()->andReturn("foo");
+
+        this($this->runCommand(new InspectCommand($inspector)))->should_not_be_empty->go();
+    }
 }
