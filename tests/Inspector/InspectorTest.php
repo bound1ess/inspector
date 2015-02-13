@@ -1,4 +1,4 @@
-<?hh namespace Inspector;
+<?php namespace Inspector;
 
 class InspectorTest extends \TestCase
 {

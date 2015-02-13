@@ -1,4 +1,4 @@
-<?hh namespace Inspector\Behaviors;
+<?php namespace Inspector\Behaviors;
 
 trait SingletonBehavior
 {
@@ -8,7 +8,7 @@ trait SingletonBehavior
      */
     protected $_instance;
 
-    public function getInstance(): mixed
+    public function getInstance()
     {
         if (is_null($this->_instance)) {
             $this->_instance = new static;

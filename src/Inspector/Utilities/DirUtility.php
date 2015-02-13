@@ -1,19 +1,20 @@
-<?hh namespace Inspector\Utilities;
+<?php namespace Inspector\Utilities;
 
 class DirUtility
 {
 
-    public function __construct(protected FileUtility $file = null)
+    public function __construct(FileUtility $file = null)
     {
+        $this->file = $file;
     }
 
-    public function exists(string $dir): boolean
+    public function exists($dir)
     {
         // Somewhat weird.
         return file_exists($dir);
     }
 
-    public function getFiles(string $dir, string $suffix = ".php"): mixed
+    public function getFiles($dir, $suffix = ".php")
     {
         if ( ! $this->exists($dir)) {
             return null;
@@ -35,7 +36,7 @@ class DirUtility
      * This method will just copy all files stored in $source to $destination.
      * The initial directory structure will be IGNORED.
      */
-    public function copy(string $source, string $destination): void
+    public function copy($source, $destination)
     {
         if ( ! $this->exists($destination)) {
             mkdir($destination);

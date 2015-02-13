@@ -1,4 +1,4 @@
-<?hh namespace Inspector\Stubs;
+<?php namespace Inspector\Stubs;
 
 class SingletonStub
 {

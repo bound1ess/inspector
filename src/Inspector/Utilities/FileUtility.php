@@ -1,14 +1,14 @@
-<?hh namespace Inspector\Utilities;
+<?php namespace Inspector\Utilities;
 
 class FileUtility
 {
 
-    public function exists(string $file): boolean
+    public function exists($file)
     {
         return file_exists($file);
     }
 
-    public function read(string $file): mixed
+    public function read($file)
     {
         if ( ! $this->exists($file)) {
             return null;
@@ -17,7 +17,7 @@ class FileUtility
         return file_get_contents($file);
     }
 
-    public function containsClass(string $file): boolean
+    public function containsClass($file)
     {
         if (is_null($contents = $this->read($file))) {
             return false;
@@ -26,7 +26,7 @@ class FileUtility
         return (boolean) preg_match("/class(\s+)(\w+)/", $contents);
     }
 
-    public function write(string $file, string $contents): void
+    public function write($file, $contents)
     {
         file_put_contents($file, $contents);
     }

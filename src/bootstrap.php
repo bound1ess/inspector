@@ -1,4 +1,4 @@
-<?hh
+<?php
 
 if ( ! defined("INSPECTOR")) {
     define("INSPECTOR", __DIR__."/..");

@@ -1,4 +1,4 @@
-PHPUNIT=hhvm vendor/bin/phpunit
+PHPUNIT=vendor/bin/phpunit
 PORT=8000
 
 run-tests: ; $(PHPUNIT)

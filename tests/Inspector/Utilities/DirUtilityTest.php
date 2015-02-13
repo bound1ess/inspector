@@ -1,4 +1,4 @@
-<?hh namespace Inspector\Utilities;
+<?php namespace Inspector\Utilities;
 
 class DirUtilityTest extends \TestCase
 {

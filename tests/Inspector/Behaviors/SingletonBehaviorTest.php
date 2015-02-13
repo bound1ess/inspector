@@ -1,4 +1,4 @@
-<?hh namespace Inspector\Behaviors;
+<?php namespace Inspector\Behaviors;
 
 class SingletonBehaviorTest extends \TestCase
 {

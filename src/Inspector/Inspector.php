@@ -1,4 +1,4 @@
-<?hh namespace Inspector;
+<?php namespace Inspector;
 
 class Inspector
 {
@@ -14,13 +14,15 @@ class Inspector
     protected $marker = "__inspectorMarker__(__FILE__, __LINE__);";
 
     public function __construct(
-        protected Utilities\DirUtility $dir = null,
-        protected Utilities\FileUtility $file = null
+        Utilities\DirUtility $dir = null,
+        Utilities\FileUtility $file = null
     )
     {
+        $this->dir = $dir;
+        $this->file = $file;
     }
 
-    public function copySourceTree(string $sourceDir): string
+    public function copySourceTree($sourceDir)
     {
         $sourceDir = INSPECTOR_WD."/".$sourceDir;
 
@@ -31,7 +33,7 @@ class Inspector
         return "<info>Copying the source tree ($sourceDir) into {$this->dest}...</info>";
     }
 
-    public function placeMarkers(): string
+    public function placeMarkers()
     {
         $message = "<info>Modifying {$this->dest}...</info>".PHP_EOL;
 
@@ -52,7 +54,7 @@ class Inspector
         return $message;
     }
 
-    protected function modifyFile(string $file): integer
+    protected function modifyFile($file)
     {
         if (is_null($contents = $this->file->read($file))) {
             return 0;

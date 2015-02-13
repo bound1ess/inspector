@@ -1,4 +1,4 @@
-<?hh namespace Inspector\CLI\Commands;
+<?php namespace Inspector\CLI\Commands;
 
 use Symfony\Component\Console\Input\InputInterface as Input;
 use Symfony\Component\Console\Output\OutputInterface as Output;
@@ -6,12 +6,14 @@ use Symfony\Component\Console\Output\OutputInterface as Output;
 class InspectCommand extends \Symfony\Component\Console\Command\Command
 {
 
-    public function __construct(protected \Inspector\Inspector $inspector = null)
+    public function __construct(\Inspector\Inspector $inspector = null)
     {
         parent::__construct();
+
+        $this->inspector = $inspector;
     }
 
-    protected function configure(): void
+    protected function configure()
     {
         $this->setName("inspect")->setDescription("Performs code coverage analysis.");
 
@@ -24,7 +26,7 @@ class InspectCommand extends \Symfony\Component\Console\Command\Command
         );
     }
 
-    protected function execute(Input $input, Output $output): void
+    protected function execute(Input $input, Output $output)
     {
         $dir = $input->getOption("dir");
 

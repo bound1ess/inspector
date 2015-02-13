@@ -1,4 +1,4 @@
-<?hh namespace Inspector\CLI\Commands;
+<?php namespace Inspector\CLI\Commands;
 
 class InspectorCommandTest extends \CommandTestCase
 {
