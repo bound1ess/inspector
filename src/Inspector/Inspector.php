@@ -55,9 +55,9 @@ class Inspector
         }
 
         // Run PHPUnit.
-        //$_SERVER["argv"]["--configuration"] = $this->src."/../phpunit.xml";
-
-        \PHPUnit_TextUI_Command::main(false);
+        (new \PHPUnit_TextUI_Command)->run([
+            "--configuration=".$this->src."/../phpunit.xml" // @todo
+        ], false);
     }
 
     public function copySourceTree($source)
