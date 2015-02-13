@@ -34,9 +34,32 @@ class Inspector
         $this->traverser->addVisitor(new NodeVisitor($this->marker));
     }
 
+    /**
+     * @return void
+     */
+    public function runTests()
+    {
+        // Include the modified source files.
+        foreach ($this->dir->getFiles($this->dest) as $file) {
+            require $file;
+        }
+
+        // If it's a PHAR, include the Composer autoloader.
+        if (file_exists($autoloader = INSPECTOR_WD."/vendor/autoload.php")) {
+            require $autoloader;
+        }
+
+        // Run PHPUnit.
+        (new \PHPUnit_TextUI_Command)->run([], false);
+    }
+
     public function copySourceTree($sourceDir)
     {
         $sourceDir = INSPECTOR_WD."/".$sourceDir;
+
+        if ( ! $this->dir->exists($sourceDir)) {
+            throw new \InvalidArgumentException("Directory $sourceDir doesn't exist.");
+        }
 
         $this->dest = "/tmp/".substr(md5($sourceDir), 0, 15);
 
