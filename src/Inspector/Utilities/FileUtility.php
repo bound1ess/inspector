@@ -17,13 +17,18 @@ class FileUtility
         return file_get_contents($file);
     }
 
+    /**
+     * @todo Do something with the name.
+     * @param string $file
+     * @return boolean
+     */
     public function containsClass($file)
     {
         if (is_null($contents = $this->read($file))) {
             return false;
         }
 
-        return (boolean) preg_match("/class(\s+)(\w+)/", $contents);
+        return (boolean) preg_match("/(interface|class)(\s+)(\w+)/", $contents);
     }
 
     public function write($file, $contents)

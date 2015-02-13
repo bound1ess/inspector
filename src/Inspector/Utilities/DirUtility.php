@@ -44,7 +44,7 @@ class DirUtility
 
         if ( ! is_null($files = $this->getFiles($source))) {
             foreach ($files as $file) {
-                $newName = str_replace("/", "_", substr($file, strlen($source) + 1));
+                $newName = str_replace("/", "_", substr($file, strlen(realpath($source)) + 1));
 
                 $this->file->write($destination."/".$newName, $this->file->read($file));
             }
