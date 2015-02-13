@@ -28,13 +28,13 @@ class FileUtilityTest extends \TestCase
     /**
      * @test
      */
-    public function it_checks_if_the_given_file_contains_a_class_definition()
+    public function it_checks_if_the_given_file_contains_a_class_or_interface_definition()
     {
         $file = new FileUtility;
 
-        this($file->containsClass(__FILE__))->should_be_true->go();
-        this($file->containsClass(uniqid()))->should_not_be_true->go();
-        this($file->containsClass(INSPECTOR."/composer.json"))->should_be_false->go();
+        this($file->containsDefinition(__FILE__))->should_be_true->go();
+        this($file->containsDefinition(uniqid()))->should_not_be_true->go();
+        this($file->containsDefinition(INSPECTOR."/composer.json"))->should_be_false->go();
     }
 
     /**

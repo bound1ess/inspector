@@ -87,7 +87,7 @@ class Inspector
         foreach ($this->dir->getFiles($this->dest) as $file) {
             $message .= $file;
 
-            if ( ! $this->file->containsClass($file)) {
+            if ( ! $this->file->containsDefinition($file)) {
                 $message .= " <comment>Skipped.</comment>".PHP_EOL;
 
                 continue;
