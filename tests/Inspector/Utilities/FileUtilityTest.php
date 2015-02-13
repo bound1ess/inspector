@@ -40,6 +40,19 @@ class FileUtilityTest extends \TestCase
     /**
      * @test
      */
+    public function it_checks_if_the_given_file_contains_an_interface_definition()
+    {
+        $file = new FileUtility;
+
+        this($file->containsInterface(__FILE__))->should_be_false->go();
+        this($file->containsInterface(uniqid()))->should_be_false->go();
+        this($file->containsInterface(INSPECTOR."/stubs/EmptyInterface.php"))
+            ->should_be_true->go();
+    }
+
+    /**
+     * @test
+     */
     public function it_writes_to_a_file()
     {
         $file = new FileUtility;
