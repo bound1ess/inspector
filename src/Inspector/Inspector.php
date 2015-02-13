@@ -23,7 +23,7 @@ class Inspector
 
         // @todo inject instead
         $this->parser = new \PhpParser\Parser(new \PhpParser\Lexer);
-        $this->marker = $this->parser->parse($this->marker);
+        $this->marker = $this->parser->parse($this->marker)[0];
 
         $this->printer = new \PhpParser\PrettyPrinter\Standard;
 
