@@ -45,8 +45,19 @@ class Inspector
     public function runTests()
     {
         // Include the modified source files.
-        foreach ($this->dir->getFiles($this->dest) as $file) {
-            require $file;
+        // Load interfaces first.
+        $files = $this->dir->getFiles($this->dest);
+
+        foreach ($files as $file) {
+            if ($this->file->containsInterface($file)) {
+                require $file;
+            }
+        }
+
+        foreach ($files as $file) {
+            if ( ! $this->file->containsInterface($file)) {
+                require $file;
+            }
         }
 
         // If it's a PHAR, include the Composer autoloader.
