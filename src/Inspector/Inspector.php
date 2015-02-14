@@ -128,7 +128,7 @@ class Inspector
 
         $this->destDir = "/tmp/".substr(md5($this->srcDir), 0, 15);
 
-        $this->dir->copy($this->srcDir, $this->destSrc);
+        $this->dir->copy($this->srcDir, $this->destDir);
 
         $message = "<info>Copying the source tree into {$this->destDir}...</info>";
         $message .= PHP_EOL;
