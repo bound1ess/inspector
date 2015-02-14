@@ -91,8 +91,8 @@ class Inspector
             }
 
             if (array_key_exists($file, $markers)) {
-                if (count($mk[$file]) > 0) {
-                    $lines = $mk[$file];
+                if (count($markers[$file]) > 0) {
+                    $lines = $markers[$file];
                 } else {
                     $message .= "<info>Class $className is completely covered.</info>".PHP_EOL;
 
@@ -101,17 +101,16 @@ class Inspector
             }
 
             $message .= sprintf(
-                "<info>%s: <error>%s</error> markers were NOT executed:</info>%s",
+                "<info>%s: <error>%s</error> markers were NOT executed:</info>",
                 $className,
-                count($lines),
-                PHP_EOL
+                count($lines)
             );
 
-            $message .= sprintf("    <comment>lines %s.</comment>", implode(", ", $lines));
+            $message .= sprintf("<comment> lines %s.</comment>", implode(", ", $lines));
             $message .= PHP_EOL;
         }
 
-        return $message."Done.".PHP_EOL;
+        return $message.PHP_EOL."Done.".PHP_EOL;
     }
 
     /**

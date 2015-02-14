@@ -46,6 +46,10 @@ class NodeVisitor extends \PhpParser\NodeVisitorAbstract
      */
     public function leaveNode(\PhpParser\Node $node)
     {
+        if (in_array(spl_object_hash($node), $this->visited)) {
+            return $node;
+        }
+
         $this->visited[] = spl_object_hash($node);
 
         if ($node instanceof \PhpParser\Node\Expr\FuncCall) {
@@ -56,10 +60,6 @@ class NodeVisitor extends \PhpParser\NodeVisitorAbstract
 
                 return $node;
             }
-        }
-
-        if (in_array(spl_object_hash($node), $this->visited)) {
-            return $node;
         }
 
         $className = explode("\\", get_class($node));
