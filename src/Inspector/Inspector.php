@@ -58,8 +58,19 @@ class Inspector
      */
     public function runTests()
     {
-        // Include Composer autoloader for the project.
-        require $this->src."/../vendor/autoload.php";
+        // Add a classmap for the project.
+        $map = [];
+
+        foreach ($this->dir->getFiles($this->dest) as $file) {
+            $class = str_replace("_", "\\", substr($file, strlen($this->dest) + 1));
+            $class = substr($class, 0, strlen($class) - 4); // Remove ".php" suffix.
+
+            $map[$class] = $file;
+        }
+
+        $loader = new \Composer\Autoload\ClassLoader;
+        $loader->addClassMap($map);
+        $loader->register();
 
         // Run PHPUnit.
         if ( ! file_exists($configurationPath = $this->src."/../phpunit.xml")) {

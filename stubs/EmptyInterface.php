@@ -1,4 +1,4 @@
-<?php namespace Inspector;
+<?php namespace Inspector\Stubs;
 
 interface EmptyInterface
 {

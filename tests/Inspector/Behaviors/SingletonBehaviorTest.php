@@ -1,5 +1,7 @@
 <?php namespace Inspector\Behaviors;
 
+use Inspector\Stubs\SingletonStub as Stub;
+
 class SingletonBehaviorTest extends \TestCase
 {
 
@@ -8,8 +10,6 @@ class SingletonBehaviorTest extends \TestCase
      */
     public function it_ensures_that_you_always_get_the_same_instance()
     {
-        $stub = new \Inspector\Stubs\SingletonStub;
-
-        this($stub->getInstance())->should_be_equal_to($stub->getInstance())->go();
+        this(Stub::getInstance())->should_be_equal_to(Stub::getInstance())->go();
     }
 }

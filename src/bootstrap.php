@@ -1,5 +1,8 @@
 <?php
 
+// @notable
+error_reporting(E_ALL);
+
 if ( ! defined("INSPECTOR")) {
     define("INSPECTOR", __DIR__."/..");
 }
