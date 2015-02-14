@@ -22,7 +22,7 @@ class InspectorCommandTest extends \CommandTestCase
     {
         $inspector = \Mockery::mock("Inspector\Inspector");
 
-        $inspector->shouldReceive("copySourceTree", "placeMarkers", "runTests")
+        $inspector->shouldReceive("copySourceTree", "placeMarkers", "runTests", "analyse")
             ->once()
             ->andReturn("foo");
 

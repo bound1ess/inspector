@@ -36,6 +36,6 @@ class InspectCommand extends \Symfony\Component\Console\Command\Command
         $output->writeln("<info>Running PHPUnit tests...</info>");
         $this->inspector->runTests();
 
-        // $this->inspector->analyse();
+        $output->writeln($this->inspector->analyse());
     }
 }

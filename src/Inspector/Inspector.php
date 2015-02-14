@@ -40,6 +40,20 @@ class Inspector
     }
 
     /**
+     * @return string
+     */
+    public function analyse()
+    {
+        $message = PHP_EOL."<info>Performing analysis...</info>".PHP_EOL;
+
+        foreach (Marker::getInstance()->getAll(true) as $file) {
+            $message .= "$file:".PHP_EOL;
+        }
+
+        return $message;
+    }
+
+    /**
      * @return void
      */
     public function runTests()
