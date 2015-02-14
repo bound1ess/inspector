@@ -78,7 +78,7 @@ class Inspector
     {
         $message = PHP_EOL."<info>Performing analysis...</info>".PHP_EOL;
 
-        foreach (Marker::getInstance()->getAll(true) as $file) {
+        foreach (Marker::getInstance()->getAll(true) as $file => $lines) {
             $message .= "$file:".PHP_EOL;
         }
 
@@ -90,7 +90,7 @@ class Inspector
      */
     public function runTests()
     {
-        // Add a classmap for the project.
+        // Create a classmap for the source tree.
         $map = [];
 
         foreach ($this->dir->getFiles($this->destDir) as $file) {
@@ -102,10 +102,13 @@ class Inspector
 
         $loader = new \Composer\Autoload\ClassLoader;
         $loader->addClassMap($map);
+
+        // Tricky manipulations with autoloaders.
+        require $this->srcDir."/../vendor/autoload.php";
+
         $loader->register(true); // Prepend the autoloader.
 
-        // Run PHPUnit.
-        // A small taste of PHPUnit internals.
+        // Build a PHPUnit test suite.
         $suite = new \PHPUnit_Framework_TestSuite;
 
         foreach ($this->dir->getFiles($this->testDir) as $file) {
@@ -125,6 +128,7 @@ class Inspector
             ));
         }
 
+        // Finally, run the suite.
         \PHPUnit_TextUI_TestRunner::run($suite);
     }
 

@@ -16,7 +16,7 @@ class NodeVisitor extends \PhpParser\NodeVisitorAbstract
             "Foreach_"  => 0,
             "TryCatch"  => 0,
             "Case_"     => 1,
-            "Catch_"    => 1,
+            //"Catch_"    => 1,
             "Continue_" => -1,
             "Do_"       => -1,
             "Echo_"     => 0,
