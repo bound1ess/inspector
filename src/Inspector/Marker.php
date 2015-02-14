@@ -14,12 +14,23 @@ class Marker
     protected $markers = [];
 
     /**
+     * @var string
+     */
+    protected $file;
+
+    /**
      * @param string $file
      * @param integer $line
      * @return void
      */
     public function add($file, $line)
     {
+        if (isset ($this->markers[$file]) and in_array($line, $this->markers[$file], true)) {
+            unset($this->markers[$file][array_search($line, $this->markers[$file], true)]);
+
+            return null;
+        }
+
         $this->markers[$file][] = $line;
     }
 
@@ -27,7 +38,7 @@ class Marker
      * @param boolean $removeUnnecessary
      * @return array
      */
-    public function getAll($removeUnnecessary = false)
+    public function getDeadMarkers($removeUnnecessary = false)
     {
         if ( ! $removeUnnecessary) {
             return $this->markers;
@@ -46,5 +57,23 @@ class Marker
         }
 
         return $markers;
+    }
+
+    /**
+     * @param string $file
+     * @return void
+     */
+    public function useFile($file)
+    {
+        $this->file = $file;
+    }
+
+    /**
+     * @param integer $line
+     * @return void
+     */
+    public function expect($line)
+    {
+        $this->add($this->file, $line);
     }
 }

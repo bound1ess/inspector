@@ -78,12 +78,12 @@ class Inspector
     {
         $message = PHP_EOL."<info>Performing analysis...</info>".PHP_EOL;
 
-        foreach (Marker::getInstance()->getAll(true) as $file => $lines) {
+        foreach (Marker::getInstance()->getDeadMarkers(true) as $file => $lines) {
             $className = str_replace("_", "\\", substr($file, strlen($this->destDir) + 1));
             $className = substr($className, 0, strlen($className) - 4);
 
             $message .= sprintf(
-                "<info>%s: %s markers were executed:</info>%s",
+                "<info>%s: <error>%s</error> markers were NOT executed:</info>%s",
                 $className,
                 count($lines),
                 PHP_EOL
@@ -93,7 +93,7 @@ class Inspector
             $message .= PHP_EOL;
         }
 
-        return $message."Done.";
+        return $message."Done.".PHP_EOL;
     }
 
     /**
@@ -210,6 +210,8 @@ class Inspector
         if (is_null($contents = $this->file->read($file))) {
             return null;
         }
+
+        Marker::getInstance()->useFile($file);
 
         try {
             $ast = $this->parser->parse($contents);
