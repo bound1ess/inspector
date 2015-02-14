@@ -133,7 +133,9 @@ class Inspector
         $loader->addClassMap($map);
 
         // Tricky manipulations with autoloaders.
-        require $this->srcDir."/../vendor/autoload.php";
+        if (file_exists($path = $this->srcDir."/../vendor/autoload.php")) {
+            require $path;
+        }
 
         $loader->register(true); // Prepend the autoloader.
 
