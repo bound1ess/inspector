@@ -6,3 +6,4 @@ code-coverage: ; $(PHPUNIT) --coverage-html coverage/
 coverage-server: ; php -S localhost:$(PORT) -t coverage/
 
 first-example: ; bin/inspector inspect --src=examples/50/src --test=examples/50/tests
+second-example: ; bin/inspector inspect --src examples/100/src --test examples/100/tests
