@@ -106,10 +106,23 @@ class Inspector
 
         // Run PHPUnit.
         // A small taste of PHPUnit internals.
-        $suites = new \PHPUnit_Framework_TestSuite;
+        $suite = new \PHPUnit_Framework_TestSuite;
 
         foreach ($this->dir->getFiles($this->testDir) as $file) {
-            $suites->addTest(new \PHPUnit_Framework_TestCase($file));
+            $declaredClasses = get_declared_classes();
+
+            require $file;
+            
+            $className = array_diff(get_declared_classes(), $declaredClasses);
+            $className = end($className);
+
+            if ( ! is_subclass_of($className, "PHPUnit_Framework_TestCase")) {
+                continue;
+            }
+
+            $suite->addTest(new \PHPUnit_Framework_TestSuite(
+                new \ReflectionClass($className)
+            ));
         }
 
         \PHPUnit_TextUI_TestRunner::run($suite);
