@@ -44,25 +44,8 @@ class Inspector
      */
     public function runTests()
     {
-        // Include the modified source files.
-        // Create a custom autoloader for that.
-        $map = [];
-
-        // A bunch of assumptions was made, is there a better way?
-        foreach ($this->dir->getFiles($this->dest) as $file) {
-            $file = str_replace($this->dest."/", "", $file);
-
-            $map[str_replace("_", "\\", $file)] = $file;
-        }
-
-        $loader = new \Composer\Autoload\ClassLoader;
-        $loader->addClassMap($map);
-        $loader->register();
-
-        // If it's a PHAR, include the Composer autoloader.
-        if (file_exists($autoloader = INSPECTOR_WD."/vendor/autoload.php")) {
-            require $autoloader;
-        }
+        // Include Composer autoloader for the project.
+        require $this->src."/../vendor/autoload.php";
 
         // Run PHPUnit.
         if ( ! file_exists($configurationPath = $this->src."/../phpunit.xml")) {
