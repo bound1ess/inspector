@@ -82,7 +82,15 @@ class Inspector
             $className = str_replace("_", "\\", substr($file, strlen($this->destDir) + 1));
             $className = substr($className, 0, strlen($className) - 4);
 
-            if (array_key_exists($file, $mk = Marker::getInstance()->getDeadMarkers(true))) {
+            $markers = Marker::getInstance()->getDeadMarkers(true);
+
+            if (count($markers) === 0) {
+                $message .= "<info>Your code is 100% covered, congrats.</info>".PHP_EOL;
+
+                break;
+            }
+
+            if (array_key_exists($file, $markers)) {
                 if (count($mk[$file]) > 0) {
                     $lines = $mk[$file];
                 } else {
