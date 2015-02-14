@@ -230,6 +230,10 @@ class Inspector
             return null;
         }
 
+        if (strpos($contents, "inspector_modified") !== false) {
+            return null;
+        }
+
         Marker::getInstance()->useFile($file);
 
         try {
@@ -241,7 +245,11 @@ class Inspector
             // Traverse again, but this time the AST won't be changed.
             $ast = $this->traverser->traverse($ast);
 
-            $this->file->write($file, $this->printer->prettyPrintFile($ast));
+            $this->file->write($file, sprintf(
+                "<?php /* inspector_modified */ %s%s",
+                PHP_EOL,
+                $this->printer->prettyPrint($ast)
+            ));
         } catch (\PhpParser\Error $exception) {
             throw $exception;
         }
