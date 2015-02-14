@@ -3,6 +3,8 @@
 use Symfony\Component\Console\Input\InputInterface as Input;
 use Symfony\Component\Console\Output\OutputInterface as Output;
 
+use Symfony\Component\Console\Input\InputOption;
+
 class InspectCommand extends \Symfony\Component\Console\Command\Command
 {
 
@@ -20,21 +22,23 @@ class InspectCommand extends \Symfony\Component\Console\Command\Command
         $this->addOption(
             "src", // Name.
             null, // Shortcut.
-            \Symfony\Component\Console\Input\InputOption::VALUE_REQUIRED, // Mode.
+            InputOption::VALUE_REQUIRED, // Mode.
             "A source directory to work with.", // Description.
             "src" // Default value.
         );
 
-        $this->addArgument(
+        $this->addOption(
             "test",
-            \Symfony\Component\Console\Input\InputArgument::REQUIRED,
-            "A directory where the tests are placed."
+            null,
+            InputOption::VALUE_REQUIRED,
+            "A directory where the tests are placed.",
+            "tests"
         );
     }
 
     protected function execute(Input $input, Output $output)
     {
-        $this->inspector->setTestDir($input->getArgument("test"));
+        $this->inspector->setTestDir($input->getOption("test"));
         $this->inspector->setSrcDir($input->getOption("src"));
 
         $output->writeln($this->inspector->copySourceTree());

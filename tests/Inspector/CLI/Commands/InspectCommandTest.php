@@ -26,9 +26,10 @@ class InspectorCommandTest extends \CommandTestCase
             ->once()
             ->andReturn("foo");
 
-        this($this->runCommand(new InspectCommand($inspector, [
-            "test"    => "foo",
-            "--src"   => "bar",
-        ])))->should_not_be_empty->go();
+        $inspector->shouldReceive("setSrcDir", "setTestDir")->once();
+
+        $command = new InspectCommand($inspector);
+
+        this($this->runCommand($command))->should_not_be_empty->go();
     }
 }
