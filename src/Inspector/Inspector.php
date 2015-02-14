@@ -1,5 +1,13 @@
 <?php namespace Inspector;
 
+use Inspector\Utilities\DirUtility;
+use Inspector\Utilities\FileUtility;
+
+use PhpParser\Parser;
+use PhpParser\Lexer;
+use PhpParser\NodeTraverser;
+use PhpParser\PrettyPrinter\Standard;
+
 /**
  * @codeCoverageIgnore
  */
@@ -9,34 +17,58 @@ class Inspector
     /**
      * @var string
      */
-    protected $dest;
+    protected $destDir;
 
     /**
      * @var string
      */
-    protected $src;
+    protected $srcDir;
+
+    /**
+     * @var string
+     */
+    protected $testDir;
 
     /**
      * @var string
      */
     protected $marker = "<?php __inspectorMarker__(__FILE__, __LINE__);";
 
-    public function __construct(
-        Utilities\DirUtility $dir = null,
-        Utilities\FileUtility $file = null
-    )
+    /**
+     * @param Inspector\Utilities\DirUtility $dir
+     * @param Inspector\Utilities\FileUtility $file
+     * @return object
+     */
+    public function __construct(DirUtility $dir, FileUtility $file)
     {
         $this->dir = $dir;
         $this->file = $file;
 
         // @todo inject instead
-        $this->parser = new \PhpParser\Parser(new \PhpParser\Lexer);
-        $this->marker = $this->parser->parse($this->marker)[0];
+        $this->parser    = new Parser(new Lexer);
+        $this->marker    = $this->parser->parse($this->marker)[0];
+        $this->printer   = new Standard;
+        $this->traverser = new NodeTraverser;
 
-        $this->printer = new \PhpParser\PrettyPrinter\Standard;
-
-        $this->traverser = new \PhpParser\NodeTraverser;
         $this->traverser->addVisitor(new NodeVisitor($this->marker));
+    }
+
+    /**
+     * @param string $path
+     * @return void
+     */
+    public function setSrcDir($path)
+    {
+        $this->srcDir = $path;
+    }
+
+    /**
+     * @param string $path
+     * @return void
+     */
+    public function setTestDir($path)
+    {
+        $this->testDir = $path;
     }
 
     /**
@@ -61,8 +93,8 @@ class Inspector
         // Add a classmap for the project.
         $map = [];
 
-        foreach ($this->dir->getFiles($this->dest) as $file) {
-            $class = str_replace("_", "\\", substr($file, strlen($this->dest) + 1));
+        foreach ($this->dir->getFiles($this->destDir) as $file) {
+            $class = str_replace("_", "\\", substr($file, strlen($this->destDir) + 1));
             $class = substr($class, 0, strlen($class) - 4); // Remove ".php" suffix.
 
             $map[$class] = $file;
@@ -70,43 +102,48 @@ class Inspector
 
         $loader = new \Composer\Autoload\ClassLoader;
         $loader->addClassMap($map);
-        $loader->register();
+        $loader->register(true); // Prepend the autoloader.
 
         // Run PHPUnit.
-        if ( ! file_exists($configurationPath = $this->src."/../phpunit.xml")) {
-            $configurationPath .= ".dist";
+        // A small taste of PHPUnit internals.
+        $suites = new \PHPUnit_Framework_TestSuite;
+
+        foreach ($this->dir->getFiles($this->testDir) as $file) {
+            $suites->addTest(new \PHPUnit_Framework_TestCase($file));
         }
 
-        (new \PHPUnit_TextUI_Command)->run([
-            "--configuration=".$configurationPath
-        ], false);
+        \PHPUnit_TextUI_TestRunner::run($suite);
     }
 
-    public function copySourceTree($source)
+    /**
+     * @return void
+     */
+    public function copySourceTree()
     {
-        $sourceDir = INSPECTOR_WD."/".$source;
+        $this->srcDir = INSPECTOR_WD."/".$this->srcDir;
 
-        if ( ! $this->dir->exists($sourceDir)) {
-            throw new \InvalidArgumentException("Directory $sourceDir doesn't exist.");
+        if ( ! $this->dir->exists($this->srcDir)) {
+            throw new \InvalidArgumentException("Directory {$this->srcDir} doesn't exist.");
         }
 
-        $this->dest = "/tmp/".substr(md5($sourceDir), 0, 15);
+        $this->destDir = "/tmp/".substr(md5($this->srcDir), 0, 15);
 
-        $this->dir->copy($sourceDir, $this->dest);
+        $this->dir->copy($this->srcDir, $this->destSrc);
 
-        $this->src = $sourceDir;
-
-        $message = "<info>Copying the source tree ($source) into {$this->dest}...</info>";
+        $message = "<info>Copying the source tree into {$this->destDir}...</info>";
         $message .= PHP_EOL;
 
         return $message;
     }
 
+    /**
+     * @return void
+     */
     public function placeMarkers()
     {
-        $message = "<info>Modifying {$this->dest}...</info>".PHP_EOL;
+        $message = "<info>Modifying {$this->destDir}...</info>".PHP_EOL;
 
-        foreach ($this->dir->getFiles($this->dest) as $file) {
+        foreach ($this->dir->getFiles($this->destDir) as $file) {
             $message .= $file;
 
             if ( ! $this->file->containsDefinition($file)) {
@@ -123,10 +160,15 @@ class Inspector
         return $message;
     }
 
+    /**
+     * @param string $file
+     * @throws PhpParser\Error
+     * @return void
+     */
     protected function modifyFile($file)
     {
         if (is_null($contents = $this->file->read($file))) {
-            return 0;
+            return null;
         }
 
         try {

@@ -18,24 +18,28 @@ class InspectCommand extends \Symfony\Component\Console\Command\Command
         $this->setName("inspect")->setDescription("Performs code coverage analysis.");
 
         $this->addOption(
-            "dir", // Name.
+            "src", // Name.
             null, // Shortcut.
             \Symfony\Component\Console\Input\InputOption::VALUE_REQUIRED, // Mode.
             "A source directory to work with.", // Description.
             "src" // Default value.
         );
+
+        $this->addArgument(
+            "test",
+            \Symfony\Component\Console\Input\InputArgument::REQUIRED,
+            "A directory where the tests are placed."
+        );
     }
 
     protected function execute(Input $input, Output $output)
     {
-        $dir = $input->getOption("dir");
+        $this->inspector->setTestDir($input->getArgument("test"));
+        $this->inspector->setSrcDir($input->getOption("src"));
 
-        $output->writeln($this->inspector->copySourceTree($dir));
+        $output->writeln($this->inspector->copySourceTree());
         $output->writeln($this->inspector->placeMarkers());
-
-        $output->writeln("<info>Running PHPUnit tests...</info>");
-        $this->inspector->runTests();
-
+        $output->writeln($this->inspector->runTests());
         $output->writeln($this->inspector->analyse());
     }
 }

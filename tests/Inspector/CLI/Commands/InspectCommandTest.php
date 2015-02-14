@@ -26,6 +26,9 @@ class InspectorCommandTest extends \CommandTestCase
             ->once()
             ->andReturn("foo");
 
-        this($this->runCommand(new InspectCommand($inspector)))->should_not_be_empty->go();
+        this($this->runCommand(new InspectCommand($inspector, [
+            "test"    => "foo",
+            "--src"   => "bar",
+        ])))->should_not_be_empty->go();
     }
 }
