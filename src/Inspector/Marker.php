@@ -41,6 +41,8 @@ class Marker
                     $markers[$file][] = $line;
                 }
             }
+
+            $markers[$file] = array_unique($markers[$file]);
         }
 
         return $markers;

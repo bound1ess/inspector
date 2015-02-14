@@ -82,14 +82,22 @@ class Inspector
             $className = str_replace("_", "\\", substr($file, strlen($this->destDir) + 1));
             $className = substr($className, 0, strlen($className) - 4);
 
-            $message .= "<info>$className:</info>".PHP_EOL;
+            $message .= sprintf(
+                "<info>%s: %s markers were executed:</info>%s",
+                $className,
+                count($lines),
+                PHP_EOL
+            );
+
+            $message .= sprintf("    <comment>lines %s.</comment>", implode(", ", $lines));
+            $message .= PHP_EOL;
         }
 
         return $message."Done.";
     }
 
     /**
-     * @return void
+     * @return string
      */
     public function runTests()
     {
@@ -133,7 +141,7 @@ class Inspector
 
         // Now load the "missing" files.
         $files = array_merge(
-            $this->dir->getFiles($this->destDir),
+            $this->dir->getFiles($this->srcDir),
             $this->dir->getFiles($this->testDir)
         );
 
@@ -148,7 +156,7 @@ class Inspector
     }
 
     /**
-     * @return void
+     * @return string
      */
     public function copySourceTree()
     {
@@ -169,7 +177,7 @@ class Inspector
     }
 
     /**
-     * @return void
+     * @return string
      */
     public function placeMarkers()
     {
