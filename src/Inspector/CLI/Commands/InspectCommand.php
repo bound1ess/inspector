@@ -43,7 +43,9 @@ class InspectCommand extends \Symfony\Component\Console\Command\Command
 
         $output->writeln($this->inspector->copySourceTree());
         $output->writeln($this->inspector->placeMarkers());
-        $output->writeln($this->inspector->runTests());
+
+        $this->inspector->runTests();
+
         $output->writeln($this->inspector->analyse());
     }
 }

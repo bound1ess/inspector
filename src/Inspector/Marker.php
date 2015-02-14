@@ -53,7 +53,9 @@ class Marker
                 }
             }
 
-            $markers[$file] = array_unique($markers[$file]);
+            if (isset ($markers[$file])) {
+                $markers[$file] = array_unique($markers[$file]);
+            }
         }
 
         return $markers;

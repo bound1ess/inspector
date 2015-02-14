@@ -78,9 +78,19 @@ class Inspector
     {
         $message = PHP_EOL."<info>Performing analysis...</info>".PHP_EOL;
 
-        foreach (Marker::getInstance()->getDeadMarkers(true) as $file => $lines) {
+        foreach ($this->dir->getFiles($this->destDir) as $file) {
             $className = str_replace("_", "\\", substr($file, strlen($this->destDir) + 1));
             $className = substr($className, 0, strlen($className) - 4);
+
+            if (array_key_exists($file, $mk = Marker::getInstance()->getDeadMarkers(true))) {
+                if (count($mk[$file]) > 0) {
+                    $lines = $mk[$file];
+                } else {
+                    $message .= "<info>Class $className is completely covered.</info>".PHP_EOL;
+
+                    continue;
+                }
+            }
 
             $message .= sprintf(
                 "<info>%s: <error>%s</error> markers were NOT executed:</info>%s",
@@ -97,7 +107,7 @@ class Inspector
     }
 
     /**
-     * @return string
+     * @return void
      */
     public function runTests()
     {
@@ -217,6 +227,9 @@ class Inspector
             $ast = $this->parser->parse($contents);
 
             // Traverse the AST and insert "markers".
+            $ast = $this->traverser->traverse($ast);
+
+            // Traverse again, but this time the AST won't be changed.
             $ast = $this->traverser->traverse($ast);
 
             $this->file->write($file, $this->printer->prettyPrintFile($ast));
