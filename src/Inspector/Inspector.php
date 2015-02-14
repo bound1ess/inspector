@@ -79,10 +79,13 @@ class Inspector
         $message = PHP_EOL."<info>Performing analysis...</info>".PHP_EOL;
 
         foreach (Marker::getInstance()->getAll(true) as $file => $lines) {
-            $message .= "$file:".PHP_EOL;
+            $className = str_replace("_", "\\", substr($file, strlen($this->destDir) + 1));
+            $className = substr($className, 0, strlen($className) - 4);
+
+            $message .= "<info>$className:</info>".PHP_EOL;
         }
 
-        return $message;
+        return $message."Done.";
     }
 
     /**
@@ -126,6 +129,18 @@ class Inspector
             $suite->addTest(new \PHPUnit_Framework_TestSuite(
                 new \ReflectionClass($className)
             ));
+        }
+
+        // Now load the "missing" files.
+        $files = array_merge(
+            $this->dir->getFiles($this->destDir),
+            $this->dir->getFiles($this->testDir)
+        );
+
+        foreach ($files as $file) {
+            if ( ! $this->file->containsDefinition($file)) {
+                require $file;
+            }
         }
 
         // Finally, run the suite.
