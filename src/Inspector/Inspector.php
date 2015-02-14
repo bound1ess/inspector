@@ -84,11 +84,11 @@ class Inspector
 
             $markers = Marker::getInstance()->getDeadMarkers(true);
 
-            if (count($markers) === 0) {
-                $message .= "<info>Your code is 100% covered, congrats.</info>".PHP_EOL;
+            //if (count($markers) === 0) {
+            //    $message .= "<info>Your code is 100% covered, congrats.</info>".PHP_EOL;
 
-                break;
-            }
+            //    break;
+            //}
 
             if (array_key_exists($file, $markers)) {
                 if (count($markers[$file]) > 0) {
@@ -98,6 +98,8 @@ class Inspector
 
                     continue;
                 }
+            } else {
+                continue;
             }
 
             $message .= sprintf(
@@ -226,6 +228,8 @@ class Inspector
      */
     protected function modifyFile($file)
     {
+        Marker::getInstance()->useFile($file);
+
         if (is_null($contents = $this->file->read($file))) {
             return null;
         }
@@ -233,8 +237,6 @@ class Inspector
         if (strpos($contents, "inspector_modified") !== false) {
             return null;
         }
-
-        Marker::getInstance()->useFile($file);
 
         try {
             $ast = $this->parser->parse($contents);
