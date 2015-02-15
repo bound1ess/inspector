@@ -50,7 +50,7 @@ class Inspector
         $this->printer   = new Standard;
         $this->traverser = new NodeTraverser;
 
-        $this->traverser->addVisitor(new NodeVisitor($this->marker));
+        $this->traverser->addVisitor($this->nodeVisitor = new NodeVisitor($this->marker));
     }
 
     /**
@@ -107,6 +107,8 @@ class Inspector
                 $className,
                 count($lines)
             );
+
+            sort($lines);
 
             $message .= sprintf("<comment> lines %s.</comment>", implode(", ", $lines));
             $message .= PHP_EOL;
@@ -242,10 +244,16 @@ class Inspector
             $ast = $this->parser->parse($contents);
 
             // Traverse the AST and insert "markers".
+            $this->nodeVisitor->setDryRun(false);
+
             $ast = $this->traverser->traverse($ast);
 
-            // Traverse again, but this time the AST won't be changed.
-            $ast = $this->traverser->traverse($ast);
+            // Parse and traverse again, but this time the AST won't be changed.
+            $this->nodeVisitor->setDryRun(true);
+
+            $ast = $this->traverser->traverse(
+                $this->parser->parse($this->printer->prettyPrintFile($ast))
+            );
 
             $this->file->write($file, sprintf(
                 "<?php /* inspector_modified */ %s%s",

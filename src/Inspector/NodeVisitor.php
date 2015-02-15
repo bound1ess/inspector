@@ -27,9 +27,9 @@ class NodeVisitor extends \PhpParser\NodeVisitorAbstract
     ];
 
     /**
-     * @var array
+     * @var boolean
      */
-    protected $visited = [];
+    protected $dryRun = false;
 
     /**
      * @param object $marker
@@ -41,25 +41,32 @@ class NodeVisitor extends \PhpParser\NodeVisitorAbstract
     }
 
     /**
+     * @param boolean $flag
+     * @return void
+     */
+    public function setDryRun($flag)
+    {
+        $this->dryRun = $flag;
+    }
+
+    /**
      * @param PhpParser\Node $node
      * @return object|array
      */
     public function leaveNode(\PhpParser\Node $node)
     {
-        if (in_array(spl_object_hash($node), $this->visited)) {
-            return $node;
-        }
-
-        $this->visited[] = spl_object_hash($node);
-
         if ($node instanceof \PhpParser\Node\Expr\FuncCall) {
             if ($node->name->parts[0] == "__inspectorMarker__") {
                 // Don't want to refactor into single if statement.
-                //Marker::getInstance()->expect();
+
                 Marker::getInstance()->expect($node->getAttribute("startLine"));
 
                 return $node;
             }
+        }
+
+        if ($this->dryRun) {
+            return $node;
         }
 
         $className = explode("\\", get_class($node));
