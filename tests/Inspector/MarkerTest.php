@@ -19,13 +19,17 @@ class MarkerTest extends \TestCase
     {
         $storage = new Marker;
 
-        $storage->add("foo", 123);
-        $storage->add("foo", 124);
-        $storage->add("foo", 124); // intended
+        $storage->useFile("foo");
+
+        $storage->execute(123);
+        $storage->execute(124);
+        $storage->execute(124);
+
+        $storage->expect(123);
+        $storage->expect(125);
+        $storage->expect(126);
 
         expect(this($storage->getDeadMarkers()))
-            ->to_be_equal_to(["foo" => [123, 124]])->go();
-
-        expect(this($storage->getDeadMarkers(true)))->to_be_equal_to(["foo" => [123]])->go();
+            ->to_be_equal_to([["foo", 125]])->go();
     }
 }
