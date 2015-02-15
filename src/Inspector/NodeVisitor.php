@@ -55,13 +55,11 @@ class NodeVisitor extends \PhpParser\NodeVisitorAbstract
      */
     public function leaveNode(\PhpParser\Node $node)
     {
-        if ($node instanceof \PhpParser\Node\Expr\FuncCall) {
-            if ($node->name->parts[0] == "__inspectorMarker__") {
-                // Don't want to refactor into single if statement.
-                Marker::getInstance()->expect($node->getAttribute("startLine"));
+        if (($node instanceof \PhpParser\Node\Expr\FuncCall)
+            and $node->name->parts[0] == "__inspectorMarker__") {
+            Marker::getInstance()->expect($node->getAttribute("startLine"));
 
-                return $node;
-            }
+            return $node;
         }
 
         if ($this->dryRun) {

@@ -24,5 +24,16 @@ class NodeVisitorTest extends \TestCase
 
         this($visitor->leaveNode(\Mockery::mock("PhpParser\Node")))
             ->should_be_an("object")->go();
+
+        $visitor->setDryRun(true);
+
+        this($visitor->leaveNode(\Mockery::mock("PhpParser\Node")))
+            ->should_be_an("object")->go();
+
+        $call = new \PhpParser\Node\Expr\FuncCall(
+            new \PhpParser\Node\Name("__inspectorMarker__")
+        );
+
+        $visitor->leaveNode($call);
     }
 }
