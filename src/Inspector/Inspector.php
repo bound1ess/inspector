@@ -90,13 +90,17 @@ class Inspector
             $className = substr($className, 0, strlen($className) - 4);
 
             if ( ! isset ($markers[$file]) or ! count($markers[$file])) {
+                if ($this->file->containsDefinition($file)) {
+                    $message .= "<info>Class $className is completely covered.</info>".PHP_EOL;
+                }
+
                 continue;
             }
 
             $lines = $markers[$file];
 
             $message .= sprintf(
-                "<info>%s: <error>%s</error> marker(s) were/was NOT executed:</info>",
+                "<info>In class %s <error>%s</error> marker(s) were/was NOT executed:</info>",
                 $className,
                 count($lines)
             );
