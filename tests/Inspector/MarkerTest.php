@@ -23,7 +23,9 @@ class MarkerTest extends \TestCase
         $storage->add("foo", 124);
         $storage->add("foo", 124); // intended
 
-        expect(this($storage->getAll()))->to_be_equal_to(["foo" => [123, 124, 124]])->go();
-        expect(this($storage->getAll(true)))->to_be_equal_to(["foo" => [123]])->go();
+        expect(this($storage->getDeadMarkers()))
+            ->to_be_equal_to(["foo" => [123, 124]])->go();
+
+        expect(this($storage->getDeadMarkers(true)))->to_be_equal_to(["foo" => [123]])->go();
     }
 }

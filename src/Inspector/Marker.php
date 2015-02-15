@@ -11,7 +11,12 @@ class Marker
     /**
      * @var array
      */
-    protected $markers = [];
+    protected $expected = [];
+
+    /**
+     * @var array
+     */
+    protected $executed = [];
 
     /**
      * @var string
@@ -19,42 +24,34 @@ class Marker
     protected $file;
 
     /**
-     * @param string $file
      * @param integer $line
      * @return void
      */
-    public function add($file, $line)
+    public function execute($line)
     {
-        if (isset ($this->markers[$file]) and in_array($line, $this->markers[$file], true)) {
-            unset($this->markers[$file][array_search($line, $this->markers[$file], true)]);
+        if (in_array([$this->file, $line], $this->expected, true)) {
+            foreach ($this->expected as $key => $marker) {
+                if ($marker == [$this->file, $line]) {
+                    unset ($this->expected[$key]);
+                }
+            }
 
             return null;
         }
 
-        $this->markers[$file][] = $line;
+        $this->executed[] = [$this->file, $line];
     }
 
     /**
-     * @param boolean $removeUnnecessary
      * @return array
      */
-    public function getDeadMarkers($removeUnnecessary = false)
+    public function getDeadMarkers()
     {
-        if ( ! $removeUnnecessary) {
-            return $this->markers;
-        }
-
         $markers = [];
 
-        foreach ($this->markers as $file => $lines) {
-            foreach ($lines as $line) {
-                if ( ! in_array($line - 1, $this->markers[$file], true)) {
-                    $markers[$file][] = $line;
-                }
-            }
-
-            if (isset ($markers[$file])) {
-                $markers[$file] = array_unique($markers[$file]);
+        foreach ($this->expected as $marker) {
+            if ( ! in_array($marker, $this->executed)) {
+                $markers[] = $marker;
             }
         }
 
@@ -76,6 +73,10 @@ class Marker
      */
     public function expect($line)
     {
-        $this->add($this->file, $line);
+        if (in_array([$this->file, $line - 1], $this->expected)) {
+            return null;
+        }
+
+        $this->expected[] = [$this->file, $line];
     }
 }
