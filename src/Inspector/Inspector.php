@@ -78,39 +78,32 @@ class Inspector
     {
         $message = PHP_EOL."<info>Performing analysis...</info>".PHP_EOL;
 
+        $markers = [];
+
+        foreach (Marker::getInstance()->getDeadMarkers() as $marker) {
+            list($file, $line) = $marker;
+            $markers[$file][] = $line;
+        }
+
         foreach ($this->dir->getFiles($this->destDir) as $file) {
             $className = str_replace("_", "\\", substr($file, strlen($this->destDir) + 1));
             $className = substr($className, 0, strlen($className) - 4);
 
-            $markers = Marker::getInstance()->getDeadMarkers(true);
-
-            //if (count($markers) === 0) {
-            //    $message .= "<info>Your code is 100% covered, congrats.</info>".PHP_EOL;
-
-            //    break;
-            //}
-
-            if (array_key_exists($file, $markers)) {
-                if (count($markers[$file]) > 0) {
-                    $lines = $markers[$file];
-                } else {
-                    $message .= "<info>Class $className is completely covered.</info>".PHP_EOL;
-
-                    continue;
-                }
-            } else {
+            if ( ! isset ($markers[$file]) or ! count($markers[$file])) {
                 continue;
             }
 
+            $lines = $markers[$file];
+
             $message .= sprintf(
-                "<info>%s: <error>%s</error> markers were NOT executed:</info>",
+                "<info>%s: <error>%s</error> marker(s) were/was NOT executed:</info>",
                 $className,
                 count($lines)
             );
 
             sort($lines);
 
-            $message .= sprintf("<comment> lines %s.</comment>", implode(", ", $lines));
+            $message .= sprintf("<comment> line(s) %s.</comment>", implode(", ", $lines));
             $message .= PHP_EOL;
         }
 
@@ -248,17 +241,20 @@ class Inspector
 
             $ast = $this->traverser->traverse($ast);
 
+            // Save the updated code.
+            $this->file->write($file, $this->printer->prettyPrintFile($ast));
+
             // Parse and traverse again, but this time the AST won't be changed.
             $this->nodeVisitor->setDryRun(true);
 
             $ast = $this->traverser->traverse(
-                $this->parser->parse($this->printer->prettyPrintFile($ast))
+                $this->parser->parse($this->file->read($file))
             );
 
+            // Save the final result.
             $this->file->write($file, sprintf(
-                "<?php /* inspector_modified */ %s%s",
-                PHP_EOL,
-                $this->printer->prettyPrint($ast)
+                "%s /* inspector_modified */",
+                $this->printer->prettyPrintFile($ast)
             ));
         } catch (\PhpParser\Error $exception) {
             throw $exception;

@@ -58,7 +58,6 @@ class NodeVisitor extends \PhpParser\NodeVisitorAbstract
         if ($node instanceof \PhpParser\Node\Expr\FuncCall) {
             if ($node->name->parts[0] == "__inspectorMarker__") {
                 // Don't want to refactor into single if statement.
-
                 Marker::getInstance()->expect($node->getAttribute("startLine"));
 
                 return $node;

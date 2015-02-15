@@ -29,16 +29,6 @@ class Marker
      */
     public function execute($line)
     {
-        if (in_array([$this->file, $line], $this->expected, true)) {
-            foreach ($this->expected as $key => $marker) {
-                if ($marker == [$this->file, $line]) {
-                    unset ($this->expected[$key]);
-                }
-            }
-
-            return null;
-        }
-
         $this->executed[] = [$this->file, $line];
     }
 
